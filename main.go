@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
+	"os"
 )
 
 func requestLogger(w http.ResponseWriter, r *http.Request) {
@@ -37,7 +38,12 @@ func handleVerify(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	err := http.ListenAndServe(":8080", http.HandlerFunc(handleRequest))
+	port := "8080"
+	if p := os.Getenv("PORT"); p != "" {
+		port = p
+	}
+	addr := fmt.Sprintf(":%s", port)
+	err := http.ListenAndServe(addr, http.HandlerFunc(handleRequest))
 	if err != nil {
 		panic(err)
 	}
